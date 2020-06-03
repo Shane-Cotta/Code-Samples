@@ -48,9 +48,18 @@ def lambda_handler(event, context):
         })
     }
     
+    AlreadySubmitted = {
+        "statusCode": 200,
+        "headers": {},
+        "body": json.dumps({
+            "message": "You have already submitted for the day, please try again tomorrow."
+        })
+    }
+    
     ################################
     # MAIN
     ################################
+    # Validate Employee ID
     try:
         dynamodb = boto3.resource('dynamodb')
         table = dynamodb.Table('existingEmployee')
@@ -66,6 +75,24 @@ def lambda_handler(event, context):
         print('WARN: Employee ID '+ event['empid'] +' does not exist in DynamoDB', e)
         return IncorrectEmployeeID
         exit(0)
+    # Validate If already submitted for the day
+    try:
+        dynamodb = boto3.resource('dynamodb')
+        table = dynamodb.Table('covid_checklist')
+        response = table.get_item(
+            Key={
+                'empid': int(event['empid']),
+                'submitted_date': currentdate
+            }
+        )
+        item = response['Item']
+        print(item)
+        print("INFO: "+ event['empid'] + " has already submitted on " + currentdate)
+        return AlreadySubmitted
+        exit(0)
+    except:
+        print("INFO: "+ event['empid'] + " has not submitted on " + currentdate)
+    # Record Submition if validations check out
     try:
         # Declare DB VARS
         table = dynamodb.Table('covid_checklist')
@@ -84,9 +111,9 @@ def lambda_handler(event, context):
                 
                 cnopts = CnOpts()
                 cnopts.hostkeys = None
-                with Connection('example.com'
-                                ,username= 'USERNAME'
-                                ,password = 'PASSWORD'
+                with Connection('********'
+                                ,username= '********'
+                                ,password = '********'
                                 ,cnopts=cnopts
                                 ) as sftp:
                     with sftp.cd('COVID_Checklist'):
@@ -117,9 +144,9 @@ def lambda_handler(event, context):
             )
             cnopts = CnOpts()
             cnopts.hostkeys = None
-            with Connection('example.com'
-                            ,username= 'username'
-                            ,password = 'password'
+            with Connection('********'
+                            ,username= '********'
+                            ,password = '********'
                             ,cnopts=cnopts
                             ) as sftp:
                 with sftp.cd('COVID_Checklist'):
