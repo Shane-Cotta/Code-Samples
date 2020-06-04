@@ -101,8 +101,8 @@ $LocationHash = @{
 }
       
 # Declare SnipeIT Config
-$baseURL = ""
-$apikey = ""
+$baseURL = "https://itam.example.org/api/v1"
+$apikey = "YOUR API KEY"
 
 # Declare Globals
 $serialnumber = (Get-WmiObject win32_bios).SerialNumber
@@ -188,6 +188,78 @@ function updateLocation() {
 
 }
 
+function updateMonitorLocation() {
+
+    # Location Globals
+    $ipsubnet = get-ipsubnet
+    $HashAddress = $LocationHash.$ipsubnet
+    $location_query = @{
+        search=$HashAddress
+    }
+    $locationID = Invoke-RestMethod "$baseURL/locations" -Method 'GET' -Headers $headers -Body $location_query 
+    if ($assetvalues.rows.rtd_location.id -ne $computervalue.rows.rtd_location.id) {
+        Write-Host "$Mon_Model $Mon_Serial_Number location does not match $assettag...updating"
+        $patch_name = @{
+            rtd_location_id=$locationID.rows.id
+        }
+        Invoke-RestMethod "$baseURL/hardware/$assetid" -Method 'PUT' -Headers $headers -Body $patch_name
+    } else {
+        Write-Host "Monitors location "$assetvalues.rows.rtd_location.id" is equal to the attached computers location" $computervalue.rows.rtd_location.id
+    }
+
+}
+
+function updateUserLocation() {
+
+    # Location Globals
+    $ipsubnet = get-ipsubnet
+    $HashAddress = $LocationHash.$ipsubnet
+    $location_query = @{
+        search=$HashAddress
+    }
+    $locationID = Invoke-RestMethod "$baseURL/locations" -Method 'GET' -Headers $headers -Body $location_query 
+    if ($username.rows.location.id -ne $computervalue.rows.rtd_location.id) {
+        Write-Host "User location ID does not match $assettag...updating"
+        $patch_name = @{
+            location_id=$locationID.rows.id
+        }
+        Invoke-RestMethod "$baseURL/users/$userid" -Method 'PUT' -Headers $headers -Body $patch_name
+    } else {
+        Write-Host "User location ID is equal to the attached computers location " $computervalue.rows.rtd_location.id " Skipping..."
+    }
+
+}
+
+function AuditComputer() {
+
+    try {
+	    $audit_computer = @{
+          asset_tag=$computervalue.rows.asset_tag
+        }
+		Invoke-RestMethod "$baseURL/hardware/audit" -Method 'POST' -Headers $headers -Body $audit_computer
+    } 
+	catch {
+        Write-Host "Unable to audit computer, probably does not exist, Skipping..."
+		continue
+    }
+	
+}
+
+function AuditMonitor() {
+
+    try {
+		$audit_monitor = @{
+          asset_tag=$assetvalues.rows.asset_tag
+        }
+		Invoke-RestMethod "$baseURL/hardware/audit" -Method 'POST' -Headers $headers -Body $audit_monitor
+    } 
+	catch {
+        Write-Host "Unable to audit monitor, probably does not exist, Skipping..."
+		continue
+    }
+	
+}
+
 function CheckCurrentAssignedUser() {
 
     if ($computervalue.rows.assigned_to.id -ne $userid) {
@@ -211,10 +283,14 @@ try {
 
     # Validate if hostname needs to be updated.
     updateHostname
-    # Check if location is accurate
+    # Check if Computer location is accurate
     updateLocation
+	# Check if user location matches computer location
+	updateUserLocation
     # Validate if assigned user needs to be updated.
     CheckCurrentAssignedUser
+	# Audit Computer
+	AuditComputer
 }
 catch {
     Write-Host "Error at checking/assigning asset to user"
@@ -272,16 +348,11 @@ try {
             elseif ($assetvalues.rows.assigned_to.id -eq $computervalue.rows.id) {
                 Write-Host "Monitor $Mon_Model $Mon_Serial_Number is already checked out to $assettag... skipping"
             }
-
-            #if ($assetvalues.rows.rtd_location.id -ne $computervalue.rows.rtd_location.id) {
-            #    Write-Host "$Mon_Model $Mon_Serial_Number location does not match $assettag...updating"
-            #    $patch_name = @{
-            #        rtd_location_id=$locationID.rows.id
-            #    }
-            #    Invoke-RestMethod "$baseURL/hardware/$assetid" -Method 'PUT' -Headers $headers -Body $patch_name
-            #} else {
-            #    Write-Host $assetvalues.rows.rtd_location.id" is equal to " $computervalue.rows.rtd_location.id
-            #}
+			# UPDATE MONITOR Location to match 
+			updateMonitorLocation
+			# Audit Monitor
+			AuditMonitor
+			
             ################ End Monitor Validation ################
         }
         catch {
@@ -291,4 +362,3 @@ try {
 }
 catch {
     Write-Host "Error at monitor Foreach: " $_.Exception.Message
-}
