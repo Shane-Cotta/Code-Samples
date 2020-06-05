@@ -102,7 +102,7 @@ $LocationHash = @{
       
 # Declare SnipeIT Config
 $baseURL = "https://itam.example.org/api/v1"
-$apikey = "YOUR API KEY"
+$apikey = "API KEY"
 
 # Declare Globals
 $serialnumber = (Get-WmiObject win32_bios).SerialNumber
@@ -233,8 +233,10 @@ function updateUserLocation() {
 function AuditComputer() {
 
     try {
-	    $audit_computer = @{
-          asset_tag=$computervalue.rows.asset_tag
+	$NextAuditDate = (Get-Date).AddYears(2).tostring(“yyyy-MM-dd”)
+	$audit_computer = @{
+                asset_tag=$computervalue.rows.asset_tag
+		next_audit_date="$NextAuditDate"
         }
 		Invoke-RestMethod "$baseURL/hardware/audit" -Method 'POST' -Headers $headers -Body $audit_computer
     } 
@@ -248,8 +250,10 @@ function AuditComputer() {
 function AuditMonitor() {
 
     try {
-		$audit_monitor = @{
-          asset_tag=$assetvalues.rows.asset_tag
+	$NextAuditDate = (Get-Date).AddYears(2).tostring(“yyyy-MM-dd”)
+	$audit_monitor = @{
+		asset_tag=$assetvalues.rows.asset_tag
+		next_audit_date="$NextAuditDate"
         }
 		Invoke-RestMethod "$baseURL/hardware/audit" -Method 'POST' -Headers $headers -Body $audit_monitor
     } 
@@ -362,3 +366,4 @@ try {
 }
 catch {
     Write-Host "Error at monitor Foreach: " $_.Exception.Message
+}
