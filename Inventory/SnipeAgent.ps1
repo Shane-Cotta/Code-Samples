@@ -73,31 +73,29 @@
 
 # Location Hash Table
 $LocationHash = @{
-"10.4.1" = "800 Scenic Drive";
-"10.65.5" = "800 Scenic Drive";
-"10.65.6" = "800 Scenic Drive";
-"10.65.7" = "800 Scenic Drive";
-"192.168.21" = "800 Scenic Drive";
-"10.15.46" = "912 D Street";
-"10.15.7" = "1418 J Street";
-"10.65.30" = "920 16th Street";
-"10.65.31" = "2101 Geer Road";
-"10.65.32" = "1208 9th Street";
-"10.65.33" = "4640 Spyres Way"; 
-"10.65.34" = "711 14th Street";
-"10.65.36" = "421 East Morris Ave";
-"10.65.37" = "500 North 9th Street";
-"10.65.38" = "2215 Bluegum Avenue";
-"10.65.46" = "251 East Hackett Rd";
-"10.65.8" = "1904 Richland Avenue";
-#"10.65.8" = "1917 Memorial Drive";
-#"10.65.9" = "1904 Richland Avenue";
-"10.65.9" = "1917 Memorial Drive";
-"172.26.18" = "Stanworks Patterson";
-"172.26.21" = "1310 W. Main Street";
-"192.168.7" = "801 11th Street";
-"192.168.8" = "190 Hackett Road";
-"10.65.39" = "1014 Scenic Drive";
+"127.0.0" = "800 Scenic Drive";
+"" = "800 Scenic Drive";
+"" = "800 Scenic Drive";
+"" = "800 Scenic Drive";
+"" = "800 Scenic Drive";
+"" = "912 D Street";
+"" = "1418 J Street";
+"" = "920 16th Street";
+"" = "2101 Geer Road";
+"" = "1208 9th Street";
+"" = "4640 Spyres Way"; 
+"" = "711 14th Street";
+"" = "421 East Morris Ave";
+"" = "500 North 9th Street";
+"" = "2215 Bluegum Avenue";
+"" = "251 East Hackett Rd";
+"" = "1904 Richland Avenue";
+"" = "1917 Memorial Drive";
+"" = "Stanworks Patterson";
+"" = "1310 W. Main Street";
+"" = "801 11th Street";
+"" = "190 Hackett Road";
+"" = "1014 Scenic Drive";
 }
       
 # Declare SnipeIT Config
