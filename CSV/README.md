@@ -1,4 +1,4 @@
-Edit the Global configs to match your use case.
+Edit the Global configs to match your use case. Ensure you run the script as admin/service account with proper directory permissions.
 
 The code will create a proccessed folder in the scripts root directory to move successfully and unsuccessfully proccessed files so they dont get picked up with the next scheduled task.
 
