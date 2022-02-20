@@ -54,7 +54,7 @@ try {
             $message.Body = $Results.Count + " Emails met criteria and were proccessed `n" + $SourceResults.Count + " Did not meet criteria `n" + "Job Finished:" + $TimeStamp;
         
             $smtp = new-object Net.Mail.SmtpClient($SMTPServer, $Port);
-            $smtp.EnableSSL = false;
+            $smtp.EnableSSL = true;
             $smtp.Credentials = New-Object System.Net.NetworkCredential($EmailUsername, $EmailPassword);
             $smtp.send($message);
         }
