@@ -1,10 +1,37 @@
-Edit the Global configs to match your use case. Ensure you run the script as admin/service account with proper directory permissions.
+RUNTIME Requirements as tested in sandbox/development:
+Mac OS, Powershell 7.1+
 
-The code will create a proccessed folder in the scripts root directory to move successfully and unsuccessfully proccessed files so they dont get picked up with the next scheduled task.
+Supported arguments (all are required in the order listed):
+    - source file name to be read (ex. users.csv)
+    - domain you would like matched from the csv (ex. @abc.edu)
+    - the email sender (ex. no-reply@keepitsimply.net)
+    - the email reciepient (ex. me@shanecotta.com)
+    - the email server (ex. email-smtp.us-west-1.amazonaws.com)
+    - the email server port (ex. 587)
+    - the email Username (ex. AKIAQTI42N62WR53QXKX)
+    - the email Password (ex. 1234)
 
-NOTE: Your email provider may require you to generate an app specific key for the authintication email piece to work. (gmail, yahoo and etc..)
+Windows:
+1. Drop into root directory of choice and run script using and elevated powershell windows
+2. Follow the prompts and select if you would like to install a scheduled task or run the code once
+      a) If installing as a scheduled task, this will install the scheduled task with the name CSVProccessor.
 
-Next Release:
-1. Add SQL DB Logging for success and error reporting
-2. Better Error handling for dealing with multiple csv drops.
-3. Build an Invoke-Rest function to allow API calls to be made to webhook services creating tickets in issue tracking software.
+Linux/Unix:
+1. Follow the associated Microsoft documentation to install powershell on linux [Here](https://docs.microsoft.com/en-us/powershell/scripting/install/install-debian?view=powershell-7.2#:~:text=via%20Package%20Repository-,PowerShell%20for%20Linux%20is%20published%20to,for%20easy%20installation%20and%20updates.&text=As%20superuser%2C%20register%20the%20Microsoft,sudo%20apt%2Dget%20install%20powershell%20.)
+2. Create the following cron making sure to populate with your scripts root directory 
+    a) export VISUAL=nano; crontab -e
+3. Add the following subsutiting with your arguments: 0 0 1 * * pwsh -File "/home/user/scripts/examplescript.ps1 $File $DomainMatch $EmailSender $EmailReciepient $EmailServer $EmailPort $EmailUser $EmailPass"
+    
+NOTE: Verify you run the script as admin/service account with proper directory permissions.
+
+The code will create the below folder structure/files within the scripts root directory.:
+Root
+--> incoming
+    --> (users.csv)
+--> outgoing
+    --> (usersyyyyMMddHHmmss.csv)
+--> proccessed
+    --> Proccessed source file (yyyyMMddHHmmss.csv)
+--> log.txt
+
+NOTE: Your email provider may require you to generate an app specific key for the auth to work. (gmail, yahoo and etc..) I have included an aws SES account in the launchers examples, please DM for a the password to the SMTP sandbox.
