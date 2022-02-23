@@ -2,14 +2,14 @@ RUNTIME Requirements as tested in sandbox/development:
 Mac OS, Powershell 7.1+
 
 Supported arguments (all are required in the order listed):
-    - source file name to be read (ex. users.csv)
-    - domain you would like matched from the csv (ex. @abc.edu)
-    - the email sender (ex. no-reply@keepitsimply.net)
-    - the email reciepient (ex. me@shanecotta.com)
-    - the email server (ex. email-smtp.us-west-1.amazonaws.com)
-    - the email server port (ex. 587)
-    - the email Username (ex. AKIAQTI42N62WR53QXKX)
-    - the email Password (ex. 1234)
+1. source file name to be read (ex. users.csv)
+2. domain you would like matched from the csv (ex. @abc.edu)
+3. the email sender (ex. no-reply@keepitsimply.net)
+4. the email reciepient (ex. me@shanecotta.com)
+5. the email server (ex. email-smtp.us-west-1.amazonaws.com)
+6. the email server port (ex. 587)
+7. the email Username (ex. AKIAQTI42N62WR53QXKX)
+8. the email Password (ex. 1234)
 
 Windows:
 1. Drop into root directory of choice and run script using and elevated powershell windows
