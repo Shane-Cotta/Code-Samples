@@ -48,7 +48,7 @@ try {
         $MSG = "$TimeStamp,WARN,Proccessed DIR missing: created " + $RootDIR + $ProccessedFolder
         Add-Content -Path $LogFile -Value $MSG
     }
-    # Check if file exists
+    # Check if dropped source file exists
     if ([System.IO.File]::Exists($Path)){
         # Proccess each record within csv
         ForEach ($row in import-csv $Path){
