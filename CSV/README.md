@@ -28,7 +28,7 @@ Linux/Unix:
     
 NOTE: Verify you run the script as admin/service account with proper directory permissions.
 
-The code will create the below folder structure/files within the scripts root directory.:
+The code will create the below folder structure/files within the scripts root directory.:\
 Root \
 --> incoming \
 ----> (users.csv) \
