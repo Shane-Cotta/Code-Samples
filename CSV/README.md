@@ -1,5 +1,5 @@
 RUNTIME Requirements as tested in sandbox/development:
-Mac OS, Powershell 7.1+
+Mac OS, Powershell 7.1+, testing on a windows or linux has not been performed.
 
 Supported arguments (all are required in the order listed):
 1. source file name to be read (ex. users.csv)
