@@ -1,5 +1,7 @@
-RUNTIME Requirements as tested in sandbox/development:
-Mac OS, Powershell 7.1+, testing on a windows or linux has not been performed.
+RUNTIME Requirements as tested in sandbox/development: \
+Mac OS, Powershell v7.1+ \ 
+Enviornments not tested: \
+Windows\linux Powershell < v7.1.\
 
 Supported arguments (all are required in the order listed):
 1. source file name to be read (ex. users.csv)
