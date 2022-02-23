@@ -1,5 +1,7 @@
 RUNTIME Requirements as tested in sandbox/development: \
-Mac OS, Powershell v7.1+ \ 
+Mac OS, Powershell v7.1+
+\
+\
 Enviornments not tested: \
 Windows\linux Powershell < v7.1.\
 
