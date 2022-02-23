@@ -17,7 +17,7 @@ Supported arguments (all are required in the order listed):
 
 Windows:
 1. Drop into root directory of choice and run script using and elevated powershell windows
-2. Follow the prompts and select if you would like to install a scheduled task or run the code once
+2. Follow the prompts and select if you would like to install a scheduled task or run the code once \
       a) If installing as a scheduled task, this will install the scheduled task with the name CSVProccessor.
 
 Linux/Unix:
