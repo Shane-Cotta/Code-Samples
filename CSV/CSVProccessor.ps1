@@ -1,16 +1,18 @@
 #Configurable Vars
 $FileName = "users.csv"
 $EmailDomain = "@abc.edu"
-$Source = "/Users/shanecotta/Desktop/"
-$Destination = "/Users/shanecotta/Desktop/"
+$RootDIR = "/Users/shanecotta/Desktop/"
+$SourceFolder = "incoming"
+$DestinationFolder = "outgoing"
+$ProccessedFolder = "proccessed"
 $TimeStamp = Get-Date -Format "yyyyMMddHHmmss"
 # Email Settings
-$MailSender = "no-reply@domain.com"
-$MailReciepient = "example@domain.com"
-$SMTPServer = "smtp.domain.com"
+$MailSender = "no-reply@keepitsimply.net"
+$MailReciepient = "me@shanecotta.com"
+$SMTPServer = "email-smtp.us-west-1.amazonaws.com"
 $Port = "587"
-$EmailUsername = "example@domain.com"
-$EmailPassword = "password"
+$EmailUsername = "AKIAQTI42N62WR53QXKX"
+$EmailPassword = $args[0]
 
 ##################
 # MAIN
@@ -18,17 +20,33 @@ $EmailPassword = "password"
 try {
     $Results = @{}
     $Delta = @{}
-    $Path = $Source + $FileName
-    $LogFile = $Source + "log.txt"
-    # Check if Directory Structure and script files exists
-    if (Test-Path -Path $Destination\"Proccessed"){
-    } else {
-        New-Item -ItemType directory $Destination\"Proccessed"
-    }
+    $Path = $RootDIR + $FileName
+    $LogFile = $RootDIR + "log.txt"
+    # Check if Directory Structure(s) and log file exists, if not create and start logging
     if ([System.IO.File]::Exists($LogFile)){
     } else{
         New-Item -ItemType "file" -Path $LogFile
-        Add-Content -Path $LogFile -Value "TIMESTAMP, STATUS, MESSAGE"
+        Add-Content -Path $LogFile -Value "TIMESTAMP,STATUS,MESSAGE"
+        $MSG = "$TimeStamp,WARN,Logfile missing: created " + $LogFile
+        Add-Content -Path $LogFile -Value $MSG
+    }
+    if (Test-Path -Path $RootDIR\$SourceFolder){
+    } else {
+        New-Item -ItemType directory $RootDIR\$SourceFolder
+        $MSG = "$TimeStamp,WARN,Source DIR missing: created " + $RootDIR + $SourceFolder
+        Add-Content -Path $LogFile -Value $MSG
+    }
+    if (Test-Path -Path $RootDIR\$DestinationFolder){
+    } else {
+        New-Item -ItemType directory $RootDIR\$DestinationFolder
+        $MSG = "$TimeStamp,WARN,Source DIR missing: created " + $RootDIR + $DestinationFolder
+        Add-Content -Path $LogFile -Value $MSG
+    }
+    if (Test-Path -Path $RootDIR\$ProccessedFolder){
+    } else {
+        New-Item -ItemType directory $RootDIR\$ProccessedFolder
+        $MSG = "$TimeStamp,WARN,Proccessed DIR missing: created " + $RootDIR + $ProccessedFolder
+        Add-Content -Path $LogFile -Value $MSG
     }
     # Check if file exists
     if ([System.IO.File]::Exists($Path)){
@@ -39,12 +57,12 @@ try {
             {
                 # Add matching results to Hash table
                 $Results.add($row.emailaddress,$row.name)
-                $MSG = "$TimeStamp, INFO, Added " + $row.emailaddress
+                $MSG = "$TimeStamp,INFO,Added " + $row.emailaddress
                 Add-Content -Path $LogFile -Value $MSG
             } else {
                 # Add Deltas to the delta hash table
                 $Delta.add($row.emailaddress,$row.name)
-                $MSG = "$TimeStamp, WARN, " + $row.emailaddress + " Does not match domain"
+                $MSG = "$TimeStamp,WARN," + $row.emailaddress + " Does not match domain"
                 Add-Content -Path $LogFile -Value $MSG
             }
         }
@@ -52,9 +70,9 @@ try {
         $Results.GetEnumerator() |
             Select-Object -Property @{N='name';E={$_.Value}},
             @{N='emailaddress';E={$_.Key}} | 
-            Export-Csv -UseQuotes AsNeeded -NoTypeInformation -Path $Destination\"Proccessed"\"users$TimeStamp.csv"
+            Export-Csv -UseQuotes AsNeeded -NoTypeInformation -Path $RootDIR\$DestinationFolder\"users$TimeStamp.csv"
             ##UNCOMMENT ME
-            ##Move-Item -Path $Source$FileName -Destination $proccessed\"$TimeStamp.csv"
+            ##Move-Item -Path $RootDIR$FileName -Destination $RootDIR\$ProccessedFolder\"$TimeStamp.csv"
         # Send follow up email.
         try {       
             $message = new-object Net.Mail.MailMessage;
@@ -64,27 +82,22 @@ try {
             $Body = [string]$Results.Count + " Emails met criteria and were proccessed `n" + [string]$Delta.Count + " Did not meet criteria `n" + "Job Finished:" + [string]$TimeStamp
             $message.Body = $Body;
             $smtp = new-object Net.Mail.SmtpClient($SMTPServer, $Port);
-            $smtp.EnableSSL = true;
+            $smtp.EnableSSL = $true;
             $smtp.Credentials = New-Object System.Net.NetworkCredential($EmailUsername, $EmailPassword);
             $smtp.send($message);
         }
         catch {
-            $MSG = "$TimeStamp, ERROR, SMTP: " + $_.Exception.Message
+            $MSG = "$TimeStamp,ERROR,SMTP: " + $_.Exception.Message
             Add-Content -Path $LogFile -Value $MSG
         }
-        Write-Host "########## Deltas"
-        Write-Host @Delta
-        Write-Host "########## Results"
-        Write-Host @Results
     # If user.csv is not found continue
     } else {
-        $MSG = "$TimeStamp, INFO, Nothing to proccess found"
+        $MSG = "$TimeStamp,INFO,Nothing to proccess found"
         Add-Content -Path $LogFile -Value $MSG
     }
 }
 #Log Errors
 catch {
-    # You can also use this to error log to a Sql DB or call a webhook with a ticket system to create a bug (ex. Jira, Service Now and etc...)
-    $MSG = "$TimeStamp, ERROR, " + $_.Exception.Message
+    $MSG = "$TimeStamp,ERROR," + $_.Exception.Message
     Add-Content -Path $LogFile -Value $MSG
 }
