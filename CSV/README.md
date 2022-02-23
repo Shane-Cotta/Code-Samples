@@ -38,4 +38,4 @@ Root \
 ----> Proccessed source file (yyyyMMddHHmmss.csv) \
 --> log.txt \
 
-NOTE: Your email provider may require you to generate an app specific key for the auth to work. (gmail, yahoo and etc..) I have included an aws SES account in the launchers examples, please DM for a the password to the SMTP sandbox.
+NOTE: Your email provider may require you to generate an app specific key for the auth to work. (gmail, yahoo and etc..) included is an aws SES account in the launchers examples, please DM for a password to the SMTP sandbox.
