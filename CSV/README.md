@@ -25,13 +25,13 @@ Linux/Unix:
 NOTE: Verify you run the script as admin/service account with proper directory permissions.
 
 The code will create the below folder structure/files within the scripts root directory.:
-Root
---> incoming
-    --> (users.csv)
---> outgoing
-    --> (usersyyyyMMddHHmmss.csv)
---> proccessed
-    --> Proccessed source file (yyyyMMddHHmmss.csv)
---> log.txt
+Root \
+--> incoming \
+----> (users.csv) \
+--> outgoing \
+----> (usersyyyyMMddHHmmss.csv) \
+--> proccessed \
+----> Proccessed source file (yyyyMMddHHmmss.csv) \
+--> log.txt \
 
 NOTE: Your email provider may require you to generate an app specific key for the auth to work. (gmail, yahoo and etc..) I have included an aws SES account in the launchers examples, please DM for a the password to the SMTP sandbox.
